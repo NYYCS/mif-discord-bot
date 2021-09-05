@@ -15,10 +15,11 @@ RoleBucket = namedtuple('RoleBucket', 'emoji name')
 # https://emojipedia.org/
 
 ROLE_BUCKETS = [
-    RoleBucket(emoji='\N{WOLF FACE}', name='狼人杀'),
-    RoleBucket(emoji='\N{HOCHO}', name='剧本杀'),
-    RoleBucket(emoji='\N{PICK}', name='矮人矿坑'),
-    RoleBucket(emoji='\N{PENCIL}', name='你画我猜'),
+    RoleBucket(emoji='\N{WOLF FACE}', name='狼人杀', description=''),
+    RoleBucket(emoji='\N{HOCHO}', name='剧本杀', description=''),
+    RoleBucket(emoji='\N{PICK}', name='矮人矿坑', description=''),
+    RoleBucket(emoji='\N{PENCIL}', name='你画我猜', description=''),
+    RoleBucket(emoji='\N{CROSSED SWORDS}', name='王者荣耀', description=''),
 ]
 
 
@@ -56,10 +57,11 @@ class Roles(commands.Cog):
 
                 role = self._roles.get(emoji)
 
-                if role not in member.roles and role is not None:
-                    await member.add_roles(role)
-                else:
-                    await member.remove_roles(role)
+                if payload.event_type == 'REACTION_ADD':
+                   await member.add_roles(role)
+                
+                if payload.event_type == 'REACTION_REMOVE':
+                   await member.remove_roles(role)
 
             except Exception:
                 raise
@@ -73,6 +75,10 @@ class Roles(commands.Cog):
 
         for bucket in ROLE_BUCKETS:
             role = get(self.bot.guild.roles, name=bucket.name)
+
+            if role is None:
+               role = await self.bot.guild.create_role(name=bucket.name, mentionable=True)
+                
             self._roles[bucket.emoji] = role
 
         await self.refresh_message()
@@ -82,12 +88,11 @@ class Roles(commands.Cog):
         title = ''
 
         description = '\n'.join([
-            f'{bucket.emoji} {bucket.name:>8} -'
+            f'{bucket.emoji} {bucket.name} - {bucket.description}'
             for bucket in ROLE_BUCKETS
         ])
-
         
-        await self._role_message.edit(embed=discord.Embed(title=title, description=description, color=0x00aaff))
+        await self._role_message.edit(content=title, embed=discord.Embed(title=title, description=description, color=0x00aaff))
 
         for bucket in ROLE_BUCKETS:
             await self._role_message.add_reaction(bucket.emoji)
