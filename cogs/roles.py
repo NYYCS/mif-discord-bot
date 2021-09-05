@@ -9,7 +9,7 @@ import asyncio
 MESSAGE_ID = 883959090764730379
 CHANNEL_ID = 882826317127626805
 
-RoleBucket = namedtuple('RoleBucket', 'emoji name')
+RoleBucket = namedtuple('RoleBucket', 'emoji name description')
 
 # find unicode name from
 # https://emojipedia.org/
