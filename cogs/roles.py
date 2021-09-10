@@ -20,6 +20,8 @@ ROLE_BUCKETS = [
     RoleBucket(emoji='\N{PICK}', name='矮人矿坑', description=''),
     RoleBucket(emoji='\N{PENCIL}', name='你画我猜', description=''),
     RoleBucket(emoji='\N{CROSSED SWORDS}', name='王者荣耀', description=''),
+    RoleBucket(emoji='\N{OPEN HANDS SIGN}', name='光遇', description=''),
+    RoleBucket(emoji='\N{CHICKEN}', name='吃鸡', description='')
 ]
 
 
