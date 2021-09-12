@@ -8,7 +8,7 @@ class Utility(commands.Cog):
 
     @commands.command(name='send')
     @commands.is_owner()
-    async def send_command(self, ctx, channel: discord.Channel, message: str):
+    async def send_command(self, ctx, channel: discord.channel.TextChannel, message: str):
         embed = discord.Embed(description=message, color=0x00aaff)
         await channel.send(embed=embed)
 
