@@ -18,7 +18,7 @@ COGS = [
   	'cogs.verification',
   	'cogs.confession',
   	'cogs.welcome',
-  	'cogs.utility'
+  	'cogs.utils'
 ]
 
 for cog in COGS:
