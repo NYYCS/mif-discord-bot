@@ -15,12 +15,23 @@ RoleBucket = namedtuple('RoleBucket', 'emoji name description')
 # https://emojipedia.org/
 
 ROLE_BUCKETS = [
+    RoleBucket(emoji='\N{WOLF FACE}', name='狼人杀', description=''),
     RoleBucket(emoji='\N{HOCHO}', name='剧本杀', description=''),
     RoleBucket(emoji='\N{PICK}', name='矮人矿坑', description=''),
     RoleBucket(emoji='\N{PENCIL}', name='你画我猜', description=''),
     RoleBucket(emoji='\N{CROSSED SWORDS}', name='王者荣耀', description=''),
     RoleBucket(emoji='\N{OPEN HANDS SIGN}', name='光遇', description=''),
     RoleBucket(emoji='\N{CHICKEN}', name='吃鸡', description='')
+
+    RoleBucket(emoji='\N{ARTIST PALETTE}', name='艺术教育中心', description=''),
+    RoleBucket(emoji='\N{PAW PRINTS}', name='复旦猫协', description=''),
+    RoleBucket(emoji='\N{CAMERA}', name='复旦摄协', description=''),
+    RoleBucket(emoji='\N{STEAMING BOWL}', name='北区食堂', description=''),
+    RoleBucket(emoji='\N{ANGER SYMBOL}', name='复旦动漫社', description=''),
+    RoleBucket(emoji='\N{RIGHT-POINTING MAGNIFYING GLASS}', name='推理协会', description=''),
+    RoleBucket(emoji='\N{FILM FRAMES}', name='复旦影协', description=''),
+    RoleBucket(emoji='\N{ROLLING ON THE FLOOR LAUGHING}', name='Memes', description=''),
+
 ]
 
 
