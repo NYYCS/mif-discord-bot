@@ -31,7 +31,6 @@ ROLE_BUCKETS = [
     RoleBucket(emoji='\N{RIGHT-POINTING MAGNIFYING GLASS}', name='推理协会', description=''),
     RoleBucket(emoji='\N{FILM FRAMES}', name='复旦影协', description=''),
     RoleBucket(emoji='\N{ROLLING ON THE FLOOR LAUGHING}', name='Memes', description=''),
-
 ]
 
 
