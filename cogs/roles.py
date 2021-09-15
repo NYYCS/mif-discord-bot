@@ -15,7 +15,6 @@ RoleBucket = namedtuple('RoleBucket', 'emoji name description')
 # https://emojipedia.org/
 
 ROLE_BUCKETS = [
-    RoleBucket(emoji='\N{WOLF FACE}', name='狼人杀', description=''),
     RoleBucket(emoji='\N{HOCHO}', name='剧本杀', description=''),
     RoleBucket(emoji='\N{PICK}', name='矮人矿坑', description=''),
     RoleBucket(emoji='\N{PENCIL}', name='你画我猜', description=''),
