@@ -22,7 +22,6 @@ ROLE_BUCKETS = [
     RoleBucket(emoji='\N{CROSSED SWORDS}', name='王者荣耀', description=''),
     RoleBucket(emoji='\N{OPEN HANDS SIGN}', name='光遇', description=''),
     RoleBucket(emoji='\N{CHICKEN}', name='吃鸡', description='')
-
     RoleBucket(emoji='\N{ARTIST PALETTE}', name='艺术教育中心', description=''),
     RoleBucket(emoji='\N{PAW PRINTS}', name='复旦猫协', description=''),
     RoleBucket(emoji='\N{CAMERA}', name='复旦摄协', description=''),
