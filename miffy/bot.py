@@ -1,5 +1,8 @@
+from discord import message
 from discord.ext import commands
-import asyncpg
+import discord
+
+from . import locks
 
 import os
 
@@ -15,8 +18,14 @@ class Miffy(commands.Bot):
         self.pool = None
 
     async def start(self, *args, **kwargs):
-        self.pool = await asyncpg.create_pool(POSTGRES_URI, ssl='require')
         return await super().start(*args, **kwargs)
+    
+    async def send(self, messageable, *, delete_after=None, **attrs):
+        embed = discord.Embed(**attrs)
+        await messageable.send(embed=embed, delete_after=delete_after)
+
+    def lock_channel(self, channel, *, allowed_members = None):
+        return locks.ChannelLock(self, channel, allowed_members=allowed_members)
         
     @property
     def guild(self):
