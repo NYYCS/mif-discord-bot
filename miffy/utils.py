@@ -5,10 +5,13 @@ import string
 
 import asyncio
 
-TZINFO = timezone(timedelta(hours=8.0))
+TZINFO = timezone(timedelta(hours = 8))
 
 def random_hash(k):
     return ''.join(random.sample(string.ascii_letters, k))
+
+def keypad_emoji(num):
+    return f'{num}\ufe0f\u20e3'
 
 async def sleep_until(dt, tzinfo = TZINFO):
     delta = max(0.0, (dt - datetime.now(tzinfo)).total_seconds())
