@@ -21,7 +21,7 @@ class Miffy(commands.Bot):
         return await super().start(*args, **kwargs)
     
     async def send(self, messageable, *, delete_after=None, **attrs):
-        embed = discord.Embed(**attrs)
+        embed = discord.Embed(**attrs, color=0x00aaff)
         await messageable.send(embed=embed, delete_after=delete_after)
 
     def lock_channel(self, channel, *, allowed_members = None):
