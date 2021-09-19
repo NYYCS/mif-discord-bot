@@ -15,7 +15,7 @@ class ChannelLock:
 
     async def __aenter__(self):
         for target in self.overwrites.keys():
-            await self.channel.set_permissions(target, send_messages=False, add_reactions=False)
+            await self.channel.set_permissions(target, send_messages=False, read_messages=False, add_reactions=False)
 
         if self.allowed_members:
             self._role = await self.bot.guild.create_role(name=utils.random_hash(6))
