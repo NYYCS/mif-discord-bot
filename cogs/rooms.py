@@ -90,17 +90,19 @@ class Rooms(commands.Cog):
 
     ROOM_BUCKETS = [
         RoomBucket(name='📖学习讨论室-1'),
-        RoomBucket(name='📖学习讨论室-2')
+        RoomBucket(name='📖学习讨论室-2'),
+        RoomBucket(name='🍿放映厅-3')
     ]
     
     def __init__(self, bot):
         self.bot = bot
         self._rooms = OrderedDict()
         self._channel = None  
-        self._lock = None
-    
+        self._lock = asyncio.Lock()
+        
         self.main_loop.start()
         self.update_message_loop.start()
+        self._cleanup_loop.start()
 
     def _fill_rooms(self):
         for i, bucket in enumerate(self.ROOM_BUCKETS):
@@ -111,14 +113,23 @@ class Rooms(commands.Cog):
         message = await self._channel.fetch_message(self.MESSAGE_ID)
 
         embed = message.embeds[0].copy()
-        lines = ['**请点击您想要预约的房间所对应的表情:**']
+        lines = ['**请点击您想要预约的房间所对应的表情:**', '']
     
         for emoji, room in self._rooms.items():
             await message.add_reaction(emoji)
             schedule = ' '.join(f'`{booking.span}`' for booking in room._bookings.values())
             lines.append(f'{emoji} {room.name}: {schedule}')
 
-        description = '\n'.join(lines)
+        postfix = [
+            ''
+            '选择好您所要预约的房间后',
+            '系统将会和您进入私人房间进行对话式预约',
+            '请根据系统提供的格式进行相应回答',
+            '完成3道问题后，您将收到预约成功信息通知',
+            '确认预约信息无误后就能在您所预定的时间点和朋友一起进入讨论室啦~'
+        ]
+
+        description = '\n'.join(lines + postfix)
         embed.description = description
 
         await message.edit(embed=embed)
@@ -128,7 +139,7 @@ class Rooms(commands.Cog):
         def check(message):
             return payload.user_id == message.author.id and message.channel == self._channel
 
-        await self.bot.send(self._channel, description='请写出预约的时间. 例: `10:00AM`')
+        await self.bot.send(self._channel, description='请把你想预约的**【时间】**告诉我。例：`10:00AM`')
         message = await self.bot.wait_for('message', check=check)
 
         try:
@@ -137,7 +148,7 @@ class Rooms(commands.Cog):
         except ValueError:
             raise ValueError('给予的时间格式不正确！')
 
-        await self.bot.send(self._channel, description='请写出预约为期几久（分钟）. 例: `180`')
+        await self.bot.send(self._channel, description='请把你想预约的**【时长】**（单位统一为分钟）告诉我。例：`80`')
         message = await self.bot.wait_for('message', check=check)
 
         try:
@@ -162,13 +173,19 @@ class Rooms(commands.Cog):
         ]
 
         return members
-    
+
     async def _cleanup(self):
         async for message in self._channel.history():
             if message.id != self.MESSAGE_ID:
                 await message.delete()
 
     @tasks.loop(minutes=5)
+    async def _cleanup_loop(self):
+        await self.bot.wait_until_ready()
+        async with self._lock:
+            await self._cleanup()
+
+    @tasks.loop(seconds=30)
     async def update_message_loop(self):
         await self._update_message()
 
@@ -187,21 +204,19 @@ class Rooms(commands.Cog):
 
             room = self._rooms[payload.emoji.name]
             member = self.bot.guild.get_member(payload.user_id)
-
-            async with timeout(120) as tm, self.bot.lock_channel(self._channel, allowed_members=[member]):
-                interval = await self.get_interval(payload)
-                if not interval.in_future():
-                    raise ValueError('预约时间不可以在过去！')
-
-                for booking in room._bookings.values():
-                    if interval.intersects(booking.interval):
-                        raise ValueError('预约的时间撞到了！')
-                    
-                members = await self.get_members(payload)
-
-            if tm.expired:
-                raise RuntimeError('等太久了，从新来过吧.')
-
+            
+            async with self._lock:
+                async with timeout(120), self.bot.lock_channel(self._channel, allowed_members=[member]):
+                    interval = await self.get_interval(payload)
+                    if not interval.in_future():
+                        raise ValueError('预约时间不可以在过去！')
+    
+                    for booking in room._bookings.values():
+                        if interval.intersects(booking.interval):
+                            raise ValueError('预约的时间撞到了！')
+    
+                    members = await self.get_members(payload)
+            
             room.create_booking(interval=interval, members=members)
 
             await self._cleanup()
@@ -218,6 +233,7 @@ class Rooms(commands.Cog):
         await self.bot.send(self._channel, description=exception)
         await self._cleanup()
         self.main_loop.restart()
+
 
 def setup(bot):
     bot.add_cog(Rooms(bot))
