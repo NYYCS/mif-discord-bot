@@ -46,3 +46,7 @@ class Interval:
 
     def __contains__(self, dt):
         return self.start < dt < self.end
+
+
+def row_to_dict(row):
+    return {k: v for k, v in row.items()}
