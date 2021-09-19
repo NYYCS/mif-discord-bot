@@ -18,11 +18,9 @@ COGS = [
 	'cogs.roles',
 	'cogs.utils',
 	'cogs.verification',
+	'cogs.rooms',
 	'cogs.welcome',
-	'cogs.rooms'
 ]
-
-
 		
 for cog in COGS:
 	miffy.load_extension(cog)
