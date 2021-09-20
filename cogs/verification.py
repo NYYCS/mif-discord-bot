@@ -13,7 +13,7 @@ class Verification(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        role = get(self.bot.guild.roles, name='游客')
+        role = get(self.bot.guild.roles, name='访客')
         await member.add_roles(role)
 
         title='👋欢迎来到【旦马公寓】!'
