@@ -7,9 +7,9 @@ import asyncio
 
 
 MESSAGE_IDS = [
-    889381894389657630,
-    889382039793569832,
-    889077818854625321
+    889545146704740433,
+    889545362212290632,
+    887363543110926406
 ]
 
 RoleBucket = namedtuple('RoleBucket', 'emoji name description')
@@ -25,14 +25,16 @@ ROLE_BUCKETS = [
     RoleBucket(emoji='\N{CROSSED SWORDS}', name='王者荣耀', description=''),
     RoleBucket(emoji='\N{FOX FACE}', name='光遇', description=''),
     RoleBucket(emoji='\N{CHICKEN}', name='吃鸡', description=''),
-    RoleBucket(emoji='\N{STEAM LOCOMOTIVE}', name='吃鸡', description=''),
-    RoleBucket(emoji='\N{COW FACE}', name='吃鸡', description=''),
-    RoleBucket(emoji='\N{MAGE}', name='吃鸡', description=''),
-    RoleBucket(emoji='\N{FIRST QUARTER MOON WITH FACE}', name='吃鸡', description=''),
-    RoleBucket(emoji='\N{SCHOOL}', name='吃鸡', description=''),
-    RoleBucket(emoji='\N{STETHOSCOPE}', name='吃鸡', description=''),
-    RoleBucket(emoji='\N{ROBOT FACE}', name='吃鸡', description=''),
-    RoleBucket(emoji='\N{SCALES}', name='吃鸡', description=''),
+    RoleBucket(emoji='\N{STEAM LOCOMOTIVE}', name='柯尔特快车', description=''),
+    RoleBucket(emoji='\N{COW FACE}', name='谁是牛头王', description=''),
+    RoleBucket(emoji='\N{MAGE}', name='阿瓦隆', description=''),
+    RoleBucket(emoji='\N{FIRST QUARTER MOON WITH FACE}', name='一夜终极狼人', description=''),
+    #
+    RoleBucket(emoji='\N{SCHOOL}', name='邯郸', description=''),
+    RoleBucket(emoji='\N{STETHOSCOPE}', name='枫林', description=''),
+    RoleBucket(emoji='\N{ROBOT FACE}', name='张江', description=''),
+    RoleBucket(emoji='\N{SCALES}', name='江湾', description=''),
+    #
     RoleBucket(emoji='\N{ARTIST PALETTE}', name='美术', description=''),
     RoleBucket(emoji='\N{PAW PRINTS}', name='宠物/动物', description=''),
     RoleBucket(emoji='\N{CAMERA}', name='摄影', description=''),

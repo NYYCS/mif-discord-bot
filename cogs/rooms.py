@@ -86,7 +86,7 @@ class Room:
 class Rooms(commands.Cog):
 
     CHANNEL_ID = 886922862957559848
-    MESSAGE_ID = 888424563438944276
+    MESSAGE_ID = 889560157376352256
 
     ROOM_BUCKETS = [
         RoomBucket(name='📖学习讨论室-1'),
@@ -200,7 +200,7 @@ class Rooms(commands.Cog):
     async def main_loop(self):
         
         def check(payload):
-            return payload.message_id == self.MESSAGE_ID and payload.emoji.name in self._rooms
+            return payload.message_id == self.MESSAGE_ID and payload.emoji.name in self._rooms and payload.user_id != self.bot.user.id
 
         while True:
             payload = await self.bot.wait_for('raw_reaction_add', check=check)
