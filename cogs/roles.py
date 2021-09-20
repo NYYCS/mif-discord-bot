@@ -7,8 +7,9 @@ import asyncio
 
 
 MESSAGE_IDS = [
-    887972900047577109,
-    887973466182156349
+    889381894389657630,
+    889382039793569832,
+    889077818854625321
 ]
 
 RoleBucket = namedtuple('RoleBucket', 'emoji name description')
@@ -24,13 +25,21 @@ ROLE_BUCKETS = [
     RoleBucket(emoji='\N{CROSSED SWORDS}', name='王者荣耀', description=''),
     RoleBucket(emoji='\N{FOX FACE}', name='光遇', description=''),
     RoleBucket(emoji='\N{CHICKEN}', name='吃鸡', description=''),
-    RoleBucket(emoji='\N{ARTIST PALETTE}', name='艺术教育中心', description=''),
-    RoleBucket(emoji='\N{PAW PRINTS}', name='复旦猫协', description=''),
-    RoleBucket(emoji='\N{CAMERA}', name='复旦摄协', description=''),
+    RoleBucket(emoji='\N{STEAM LOCOMOTIVE}', name='吃鸡', description=''),
+    RoleBucket(emoji='\N{COW FACE}', name='吃鸡', description=''),
+    RoleBucket(emoji='\N{MAGE}', name='吃鸡', description=''),
+    RoleBucket(emoji='\N{FIRST QUARTER MOON WITH FACE}', name='吃鸡', description=''),
+    RoleBucket(emoji='\N{SCHOOL}', name='吃鸡', description=''),
+    RoleBucket(emoji='\N{STETHOSCOPE}', name='吃鸡', description=''),
+    RoleBucket(emoji='\N{ROBOT FACE}', name='吃鸡', description=''),
+    RoleBucket(emoji='\N{SCALES}', name='吃鸡', description=''),
+    RoleBucket(emoji='\N{ARTIST PALETTE}', name='美术', description=''),
+    RoleBucket(emoji='\N{PAW PRINTS}', name='宠物/动物', description=''),
+    RoleBucket(emoji='\N{CAMERA}', name='摄影', description=''),
     RoleBucket(emoji='\N{STEAMING BOWL}', name='北区食堂', description=''),
-    RoleBucket(emoji='\N{ANGER SYMBOL}', name='复旦动漫社', description=''),
-    RoleBucket(emoji='\N{RIGHT-POINTING MAGNIFYING GLASS}', name='推理协会', description=''),
-    RoleBucket(emoji='\N{FILM FRAMES}', name='复旦影协', description=''),
+    RoleBucket(emoji='\N{ANGER SYMBOL}', name='动漫', description=''),
+    RoleBucket(emoji='\N{RIGHT-POINTING MAGNIFYING GLASS}', name='侦探悬疑', description=''),
+    RoleBucket(emoji='\N{FILM FRAMES}', name='影视', description=''),
     RoleBucket(emoji='\N{ROLLING ON THE FLOOR LAUGHING}', name='Memes', description=''),
 ]
 
@@ -49,7 +58,7 @@ class Roles(commands.Cog):
     async def main_loop(self):
         
         def check(payload):
-            return payload.message_id in MESSAGE_IDS
+            return payload.message_id in MESSAGE_IDS and payload.emoji.name in self._roles
 
         while True:
             try:
@@ -76,7 +85,7 @@ class Roles(commands.Cog):
                    await member.remove_roles(role)
 
             except Exception:
-                raise
+                continue
 
     @main_loop.before_loop
     async def before_main_loop(self):
