@@ -91,13 +91,16 @@ class Rooms(commands.Cog):
     ROOM_BUCKETS = [
         RoomBucket(name='📖学习讨论室-1'),
         RoomBucket(name='📖学习讨论室-2'),
-        RoomBucket(name='🍿放映厅-3')
+        RoomBucket(name='🍿放映厅-3'),
+        RoomBucket(name='🎤唱k房-1'),
+        RoomBucket(name='🎤唱k房-2'),
     ]
     
     def __init__(self, bot):
         self.bot = bot
         self._rooms = OrderedDict()
-        self._channel = None  
+        self._channel = None
+        self._message = None
         self._lock = asyncio.Lock()
         
         self.main_loop.start()
@@ -106,7 +109,7 @@ class Rooms(commands.Cog):
 
     def _fill_rooms(self):
         for i, bucket in enumerate(self.ROOM_BUCKETS):
-            emoji = keypad_emoji(i)
+            emoji = keypad_emoji(i + 1)
             self._rooms[emoji] = Room.from_bucket(self.bot, bucket)
 
     async def _update_message(self):
@@ -204,6 +207,8 @@ class Rooms(commands.Cog):
 
             room = self._rooms[payload.emoji.name]
             member = self.bot.guild.get_member(payload.user_id)
+
+            await self._message.remove_reaction(payload.emoji.name, member)
             
             async with self._lock:
                 async with timeout(120), self.bot.lock_channel(self._channel, allowed_members=[member]):
@@ -226,6 +231,7 @@ class Rooms(commands.Cog):
     async def before_main_loop(self):
         await self.bot.wait_until_ready()
         self._channel = self.bot.get_channel(self.CHANNEL_ID)
+        self._message = await self._channel.fetch_message(self.MESSAGE_ID)
         self._fill_rooms()
 
     @main_loop.error
