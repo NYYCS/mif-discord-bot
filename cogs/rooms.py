@@ -91,7 +91,8 @@ class Rooms(commands.Cog):
     ROOM_BUCKETS = [
         RoomBucket(name='📖学习讨论室-1'),
         RoomBucket(name='📖学习讨论室-2'),
-        RoomBucket(name='🍿放映厅-3'),
+        RoomBucket(name='🎬私人影院-1'),
+        RoomBucket(name='🎬私人影院-2'),
         RoomBucket(name='🎤唱k房-1'),
         RoomBucket(name='🎤唱k房-2'),
     ]
@@ -121,15 +122,15 @@ class Rooms(commands.Cog):
         for emoji, room in self._rooms.items():
             await message.add_reaction(emoji)
             schedule = ' '.join(f'`{booking.span}`' for booking in room._bookings.values())
-            lines.append(f'{emoji} {room.name}: {schedule}')
+            lines.append(f'{emoji}    {room.name}：{schedule}')
 
         postfix = [
-            ''
+            '',
             '选择好您所要预约的房间后',
-            '系统将会和您进入私人房间进行对话式预约',
-            '请根据系统提供的格式进行相应回答',
+            '系统将会和您进入**私人对话式预约**',
+            '请根据系统提供的格式**进行相应回答**',
             '完成3道问题后，您将收到预约成功信息通知',
-            '确认预约信息无误后就能在您所预定的时间点和朋友一起进入讨论室啦~'
+            '**确认预约信息无误**后就能在您所预定的时间点和朋友一起进入讨论室啦~'
         ]
 
         description = '\n'.join(lines + postfix)
