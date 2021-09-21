@@ -1,3 +1,4 @@
+from cogs.welcome import CHANNEL_ID
 from discord.ext import commands, tasks
 from discord.utils import get
 import discord
@@ -9,6 +10,7 @@ import asyncio
 MESSAGE_IDS = [
     889545146704740433,
     889545362212290632,
+    889761159664795679,
     889077818854625321
 ]
 
@@ -55,6 +57,13 @@ class Roles(commands.Cog):
         self._role_message = None
 
         self.main_loop.start()
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        channel = self.bot.get_channel(882826317127626805)
+        message = await channel.fetch_message(889761159664795679)
+        for bucket in ROLE_BUCKETS[4:9]:
+            await message.add_reaction(bucket.emoji)
 
     @tasks.loop(hours=1)
     async def main_loop(self):
