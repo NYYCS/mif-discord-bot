@@ -9,7 +9,7 @@ import asyncio
 MESSAGE_IDS = [
     889545146704740433,
     889545362212290632,
-    887363543110926406
+    889077818854625321
 ]
 
 RoleBucket = namedtuple('RoleBucket', 'emoji name description')
