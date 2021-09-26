@@ -16,8 +16,8 @@ class Verification(commands.Cog):
         role = get(self.bot.guild.roles, id=883964905965887509)
 
         title='👋欢迎来到【旦马公寓】!'
-        description='''请同学利用`-mregister 全名 名字`进行注册!
-        例子：`-mregister 黄宇悦 20300246005`
+        description='''请同学利用`-register 全名 名字`进行注册!
+        例子：`-register 黄宇悦 20300246005`
         '''
         
         await member.send(embed=discord.Embed(title=title, description=description, color=0x00aaff))
