@@ -1,4 +1,3 @@
-from discord import user
 from discord.ext import commands
 import discord
 
@@ -6,7 +5,6 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 from miffy import utils
-from test import data
 
 class StudySession:
 
@@ -58,15 +56,6 @@ class Study(commands.Cog):
         self.bot = bot
         self._sessions = {}
     
-    @commands.Cog.listener()
-    async def on_ready(self):
-        async with self.bot.pool.acquire() as conn:
-            query = await conn.prepare('''INSERT INTO users(id, name, time) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING''')
-            await query.executemany([
-                [int(key), self.bot.guild.get_member(int(key)).nick, int(value)]
-                for key, value in data.items()
-            ])
-
     @commands.group(invoke_without_command=True)
     async def pom(self, ctx, *, minutes: int): 
         if ctx.author in self._sessions:
