@@ -18,6 +18,16 @@ async def sleep_until(dt, tzinfo = TZINFO):
     if delta > 0.0:
         await asyncio.sleep(delta)
 
+def to_round(num):
+    return int(round(num))
+
+def format_timedelta(delta):
+    total_seconds = delta.total_seconds()
+    hours = to_round(total_seconds // 3600)
+    minutes = to_round((total_seconds // 60) % 60)
+    return f'{hours}小时{minutes}分钟'
+
+
 class Interval:
 
     def __init__(self, start, end):
