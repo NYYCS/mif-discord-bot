@@ -66,8 +66,8 @@ class Study(commands.Cog):
         self._sessions[ctx.author] = session
         await session.start()
 
-    @pom.command(name='stop')
-    async def stop_command(self, ctx):
+    @pom.command(aliases=['end'], name='stop')
+    async def end_command(self, ctx):
         if ctx.author not in self._sessions:
             raise RuntimeError(f'{ctx.author.nick}，您目前没有学习任务，现在马上开始学习吧！')
 
