@@ -30,7 +30,8 @@ class Miffy(commands.Bot):
         return locks.ChannelLock(self, channel, allowed_members=allowed_members)
 
     async def on_command_error(self, ctx, exception):
-        await self.send(ctx, description=getattr(exception, 'original', exception))
+        if not isinstance(exception, commands.CommandNotFound):
+            await self.send(ctx, description=getattr(exception, 'original', exception))
         
     @property
     def guild(self):
