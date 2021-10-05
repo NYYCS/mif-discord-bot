@@ -46,7 +46,6 @@ class StudySession:
     def __init__(self, ctx, period):
         self.bot = ctx.bot
         self.cog = ctx.cog
-        print(self.cog)
         self.member = ctx.author
         self.channel = ctx.channel
         self.period = period
@@ -153,7 +152,7 @@ class Study(commands.Cog):
     async def pom(self, ctx, minutes: int):
         if ctx.author in self.sessions:
             session = self.sessions[ctx.author]
-            raise StudyError(f'{nick_or_name(ctx.member)}, 您目前已经有了学习任务！还剩`{to_minutes(session.time_remaining())}分钟`！')
+            raise StudyError(f'{nick_or_name(ctx.author)}, 您目前已经有了学习任务！还剩`{to_minutes(session.time_remaining())}分钟`！')
         if minutes > MAX_STUDY_SESSION_MINUTES:
             raise StudyError('你还ok吗.')
         period = Period.from_duration(minutes=minutes)
@@ -163,7 +162,7 @@ class Study(commands.Cog):
     @pom.command(aliases=['stop'])
     async def end(self, ctx):
         if ctx.author not in self.sessions:
-            raise StudyError(f'{nick_or_name(ctx.member)}, 您目前没有学习任务，现在马上开始学习吧！')
+            raise StudyError(f'{nick_or_name(ctx.author)}, 您目前没有学习任务，现在马上开始学习吧！')
         session = self.sessions[ctx.author]
         await session.end()
 
@@ -184,7 +183,7 @@ class Study(commands.Cog):
     @pom.command()
     @commands.is_owner()
     async def save(self, ctx):
-        for session in self.sessions.values():
+        for session in self.sessions.copy().values():
             await session.end()
 
     @pom.command()
@@ -215,6 +214,14 @@ class Study(commands.Cog):
                             f'这星期总学习时间: `{hours}小时{minutes:02}分钟`\n'  
         
         await ctx.send(embed=embed)
+
+    @pom.command()
+    async def who(self, ctx):
+        if self.sessions:
+            who = ', '.join([f'`{nick_or_name(member)}`' for member in self.sessions.keys()])
+            await ctx.send(embed=discord.Embed(title='正在学习的小伙伴', description=f'{who}正在学习中~！', color=discord.Color.blurple()))
+        else:
+            await ctx.send(embed=discord.Embed(title='目前没有人拥有学习任务', description='现在马上开始学习吧！', color=discord.Color.blurple()))
 
     @pom.command()
     async def leaderboard(self, ctx, page: int = 1):
