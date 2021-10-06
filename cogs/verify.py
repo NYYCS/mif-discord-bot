@@ -21,7 +21,7 @@ class Verify(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        embed = discord.Embed(color=discord.Color.dark_teal)
+        embed = discord.Embed(color=discord.Color.teal())
         embed.title = '👋欢迎来到【旦马公寓】!'
         embed.description = '请同学利用`-register 全名 名字`进行注册!\n' \
                             '例子：`-register 黄宇悦 20300246005`'
@@ -33,7 +33,7 @@ class Verify(commands.Cog):
     async def register(self, ctx, name: str, school_id: str):
         if isinstance(ctx.channel, discord.DMChannel):
             member = self.bot.guild.get_member(ctx.author.id)
-            await member.send(embed=discord.Embed(description='✅注册成功！请稍等....'))
+            await member.send(embed=discord.Embed(description='✅注册成功！请稍等....'), color=discord.Color.teal())
             await self.channel.send(f'{member.mention} - {name}: {school_id}')
 
 
