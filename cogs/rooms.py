@@ -109,7 +109,6 @@ class Rooms(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print("called")
         self.channel = channel = self.bot.get_channel(ROOM_BOOKING_CHANNEL)
         self.message = await channel.fetch_message(ROOM_BOOKING_MESSAGE)
         await self._fill_rooms()
@@ -140,7 +139,7 @@ class Rooms(commands.Cog):
 
         period = Period.from_duration(start=start, minutes=minutes)
 
-        message = await self.prompt(self.channel, 'message', description='请利用**【@用户名】**的方式选择其他一同预约的人。例: `@总策-Evelyn @总策-悦宁`')
+        message = await self.prompt(self.channel, 'message', check=check, embed=discord.Embed(description='请利用**【@用户名】**的方式选择其他一同预约的人。例: `@总策-Evelyn @总策-悦宁`'))
 
         members = [
             self.bot.guild.get_member(id) for id in 
@@ -170,8 +169,8 @@ class Rooms(commands.Cog):
                     if not period.in_future():
                         raise RoomError('预约时间不可以在过去！')
     
-                    for booking in room._bookings.values():
-                        if period.intersects(booking.interval):
+                    for booking in room.bookings.values():
+                        if period.intersects(booking.period):
                             raise RoomError('预约的时间撞到了！')
 
             room.create_booking(members, period)
@@ -184,7 +183,7 @@ class Rooms(commands.Cog):
         embed = discord.Embed(color=discord.Color.brand_red())
         embed.description = str(exception)
         await self.channel.send(embed=embed)
-        
+        await self.cleanup()
         self._internal_main_loop.restart()
 
     async def cleanup(self):
@@ -215,7 +214,7 @@ class Rooms(commands.Cog):
                                            f'请根据系统提供的格式**进行相应回答**',                              
                                            f'完成3道问题后，您将收到预约成功信息通知',                             
                                            f'**确认预约信息无误**后就能在您所预定的时间点和朋友一起进入讨论室啦~'])
-    
+
             await self.message.edit(embed=embed)
                 
 
