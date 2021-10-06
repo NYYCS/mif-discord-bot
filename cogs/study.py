@@ -1,12 +1,11 @@
 from discord.ext import commands, menus
 from typing import Optional
-from datetime import timedelta
+from datetime import datetime, timedelta
  
 from .utils.paginator import SimplePaginator
 from .utils.time import Period
 from .utils import time
 
-import traceback
 import discord
 import math
 
@@ -32,12 +31,17 @@ def to_hours_minutes(delta):
     
     return to_round(delta // 60), to_round(delta % 60)
 
+def to_readable_time(delta):
+    hours, minutes = to_hours_minutes(delta)
+    return f'{hours}小时{minutes:02}分钟'
+
 def get_rank_emoji(rank):
     emojis = [
         '\N{FIRST PLACE MEDAL}',
         '\N{SECOND PLACE MEDAL}',
         '\N{THIRD PLACE MEDAL}'
     ]
+
     return emojis[rank - 1] if rank <= 3 else ''
 
 
@@ -99,6 +103,7 @@ class StudySession:
 
         self._task.cancel()
     
+
 class StudyLeaderboardSource(menus.PageSource):
 
     def __init__(self, bot):
@@ -141,6 +146,7 @@ class StudyLeaderboardSource(menus.PageSource):
 
 
 MAX_STUDY_SESSION_MINUTES = 300
+JACKY =                     868387890839814144
 
 class Study(commands.Cog):
 
@@ -172,7 +178,7 @@ class Study(commands.Cog):
             member = ctx.author
         if member not in self.sessions:
             raise StudyError(f'{nick_or_name(member)}, 您目前没有学习任务，现在马上开始学习吧！')
-        session = self.sessions[ctx.author]
+        session = self.sessions[member]
 
         embed = discord.Embed(color=discord.Color.blurple())
         embed.title = '任务进度'
@@ -192,11 +198,11 @@ class Study(commands.Cog):
             member = ctx.author
             
         query = '''WITH ranked AS (
-                        SELECT id, name, weekly, RANK() OVER ( ORDER BY weekly DESC ) rank
+                        SELECT *, RANK() OVER ( ORDER BY weekly DESC ) rank
                         FROM users
                         WHERE weekly > 0
                    )
-                   SELECT name, weekly, rank FROM ranked
+                   SELECT * FROM ranked
                    WHERE id = $1
                 '''
 
@@ -206,12 +212,14 @@ class Study(commands.Cog):
         if member is None:
             raise StudyError('你这星期还没完成学习任务，现在马上开始学习吧！')
 
-        hours, minutes = to_hours_minutes(member['weekly'])
+        label = '超级帅哥❤' if member['king'] else ''
+        time = '拍拖时间❤❤' if member['id'] == JACKY else '学习时间'
 
         embed = discord.Embed(color=discord.Color.blurple())
         embed.title = '这星期排名'
-        embed.description = f'**第{member["rank"]:<2}名 {member["name"]}**\n' \
-                            f'这星期总学习时间: `{hours}小时{minutes:02}分钟`\n'  
+        embed.description = f'**第{member["rank"]}名 {label}{member["name"]}**\n'     \
+                            f'这星期总{time}: `{to_readable_time(member["weekly"])}`\n'   \
+                            f'整体总{time}: `{to_readable_time(member["total"])}`'
         
         await ctx.send(embed=embed)
 
@@ -228,6 +236,7 @@ class Study(commands.Cog):
         source = StudyLeaderboardSource(self.bot)
         paginator = SimplePaginator(ctx, source, page=page)
         await paginator.start()
+
 
 def setup(bot):
     bot.add_cog(Study(bot))
