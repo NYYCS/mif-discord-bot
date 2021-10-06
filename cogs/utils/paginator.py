@@ -42,5 +42,6 @@ class SimplePaginator(discord.ui.View):
         page = await self.source.get_page(self.current_page)
         embed = self.source.format_page(self, page)
         self.message = await self.ctx.send(embed=embed, view=self)
+        await self._update_buttons()
 
         
