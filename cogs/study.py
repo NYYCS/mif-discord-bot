@@ -212,14 +212,11 @@ class Study(commands.Cog):
         if member is None:
             raise StudyError('你这星期还没完成学习任务，现在马上开始学习吧！')
 
-        label = '超级帅哥❤' if member['king'] else ''
-        time = '拍拖时间❤❤' if member['id'] == JACKY else '学习时间'
-
         embed = discord.Embed(color=discord.Color.blurple())
         embed.title = '这星期排名'
-        embed.description = f'**第{member["rank"]}名 {label}{member["name"]}**\n'     \
-                            f'这星期总{time}: `{to_readable_time(member["weekly"])}`\n'   \
-                            f'整体总{time}: `{to_readable_time(member["total"])}`'
+        embed.description = f'**第{member["rank"]}名 {member["name"]}**\n'     \
+                            f'这星期总学习时间: `{to_readable_time(member["weekly"])}`\n'   \
+                            f'整体总学习时间: `{to_readable_time(member["total"])}`'
         
         await ctx.send(embed=embed)
 
