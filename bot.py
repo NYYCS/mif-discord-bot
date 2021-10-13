@@ -10,7 +10,8 @@ EXTENSIONS = [
     'cogs.sql',
     'cogs.verify',
     'cogs.welcome',
-    'cogs.roles'
+    'cogs.roles',
+    'cogs.rooms'
 ]
 
 class Bot(commands.Bot):
