@@ -145,8 +145,8 @@ class StudyLeaderboardSource(menus.PageSource):
         return embed
 
 
-MAX_STUDY_SESSION_MINUTES = 300
-JACKY =                     868387890839814144
+MAX_STUDY_SESSION_MINUTES = 24 * 60
+JACKY                     = 868387890839814144
 
 class Study(commands.Cog):
 
@@ -161,6 +161,12 @@ class Study(commands.Cog):
             raise StudyError(f'{nick_or_name(ctx.author)}, 您目前已经有了学习任务！还剩`{to_minutes(session.time_remaining())}分钟`！')
         if minutes > MAX_STUDY_SESSION_MINUTES:
             raise StudyError('你还ok吗.')
+        if minutes < 0:
+            async with self.bot.pool.acquire() as con:
+                query = '''UPDATE users SET weekly = weekly + $1 WHERE id = $2'''
+                await con.execute(query, minutes, ctx.author.id)
+            raise StudyError(f'扣了{minutes}，爽了吗')
+        
         period = Period.from_duration(minutes=minutes)
         self.sessions[ctx.author] = session = StudySession(ctx, period)
         await session.start()
