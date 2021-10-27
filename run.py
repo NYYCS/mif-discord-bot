@@ -7,13 +7,23 @@ if 'BOT_TOKEN' not in os.environ:
   	load_dotenv()
 
 
-from bot import Miffy
+from miffy.bot import Miffy
 
 
 TOKEN = os.environ['BOT_TOKEN']
 
-miffy = Miffy(command_prefix='-m', intents=discord.Intents.all())
+miffy = Miffy(command_prefix='-', intents=discord.Intents.all())
 
+COGS = [
+	'cogs.roles',
+	'cogs.rooms',
+	'cogs.study',
+	'cogs.welcome',
+	'cogs.verification'
+]
+
+for cog in COGS:
+	miffy.load_extension(cog)
 
 
 miffy.run(TOKEN)

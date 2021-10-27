@@ -22,13 +22,18 @@ class Utility(commands.Cog):
             for role_id in ROLE_IDS
         ]
 
+    async def cog_before_invoke(self, ctx):
+        return any((role in ctx.author.roles for role in self._roles))
+
     @commands.command(name='send')
     async def send_command(self, ctx, channel: discord.channel.TextChannel, message: discord.Message, title: str = ''):
-        print(self._roles)
-        if any((role in ctx.author.roles for role in self._roles)):
-            print(self._roles)
-            embed = discord.Embed(title=title, description=message.content, color=0x00aaff)
-            await channel.send(embed=embed)
+        embed = discord.Embed(title=title, description=message.content, color=0x00aaff)
+        await channel.send(embed=embed)
+
+    @commands.command(name='edit')
+    async def edit_command(self, ctx, target: discord.Message, message: discord.Message, title: str = ''):
+        embed = discord.Embed(title=title, description=message.content, color=0x00aaff)
+        await target.edit(embed=embed)
 
 
 def setup(bot):
