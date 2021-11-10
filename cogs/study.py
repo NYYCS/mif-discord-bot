@@ -1,9 +1,10 @@
-from discord.ext import commands, menus
+from discord import member
+from discord.ext import commands, menus, tasks
 from typing import Optional
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, tzinfo
  
 from .utils.paginator import SimplePaginator
-from .utils.time import Period
+from .utils.time import TZINFO, Period
 from .utils import time
 
 import discord
@@ -35,15 +36,13 @@ def to_readable_time(delta):
     hours, minutes = to_hours_minutes(delta)
     return f'{hours}小时{minutes:02}分钟'
 
-def get_rank_emoji(rank):
-    emojis = [
-        '\N{FIRST PLACE MEDAL}',
-        '\N{SECOND PLACE MEDAL}',
-        '\N{THIRD PLACE MEDAL}'
-    ]
-
-    return emojis[rank - 1] if rank <= 3 else ''
-
+def get_next_reset():
+    now = datetime.now(time.TZINFO)
+    next_reset = now + timedelta(days = 1 - now.weekday())
+    next_reset.replace(hour=4, minutes=0, seconds=0)
+    if next_reset >= now:
+        next_reset += timedelta(days=7)
+    return next_reset
 
 class StudySession:
 
@@ -146,13 +145,32 @@ class StudyLeaderboardSource(menus.PageSource):
 
 
 MAX_STUDY_SESSION_MINUTES = 24 * 60
-JACKY                     = 868387890839814144
+
 
 class Study(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
         self.sessions = {}
+        self.reset_loop.start()
+
+    @tasks.loop(hours=1)
+    async def reset_loop(self):
+        while True:
+            next_reset = get_next_reset()
+            await time.sleep_until(next_reset)
+            async with self.bot.pool.acquire() as con:
+                query = '''WITH lookup AS (
+                            SELECT id, RANK() OVER ( ORDER BY weekly DESC ) rank
+                            FROM users
+                            WHERE weekly > 0
+                           ) 
+                           SELECT id FROM lookup WHERE rank = 1;
+                        '''
+                member_id = await con.fetchval(query)
+                await con.execute('UPDATE users SET weekly = 0')
+                await con.execute('UPDATE users SET king = CASE WHEN id = $1 THEN TRUE ELSE FALSE', member_id)
+
 
     @commands.group(invoke_without_command=True)
     async def pom(self, ctx, minutes: int):
