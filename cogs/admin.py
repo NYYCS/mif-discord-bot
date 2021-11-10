@@ -17,7 +17,7 @@ class Admin(commands.Cog):
     async def add(self, ctx, cog_name, id: str):
         url = f'https://pastebin.com/raw/{id}'
         async with aiohttp.ClientSession() as session:
-            async with sessiosn.get(url) as resp:
+            async with session.get(url) as resp:
                 text = await resp.text()
                 with open(f'cogs/{cog_name}.py', 'w') as file:
                     file.write(text)
