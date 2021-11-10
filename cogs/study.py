@@ -39,8 +39,8 @@ def to_readable_time(delta):
 def get_next_reset():
     now = datetime.now(time.TZINFO)
     next_reset = now + timedelta(days = 1 - now.weekday())
-    next_reset.replace(hour=4, minutes=0, seconds=0)
-    if next_reset >= now:
+    next_reset.replace(hour=4, minute=0, second=0)
+    if next_reset <= now:
         next_reset += timedelta(days=7)
     return next_reset
 
@@ -169,7 +169,7 @@ class Study(commands.Cog):
                         '''
                 member_id = await con.fetchval(query)
                 await con.execute('UPDATE users SET weekly = 0')
-                await con.execute('UPDATE users SET king = CASE WHEN id = $1 THEN TRUE ELSE FALSE', member_id)
+                await con.execute('UPDATE users SET king = CASE WHEN id = $1 THEN TRUE ELSE FALSE END', member_id)
 
 
     @commands.group(invoke_without_command=True)
