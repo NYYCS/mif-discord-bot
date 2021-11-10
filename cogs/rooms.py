@@ -201,7 +201,7 @@ class Rooms(commands.Cog):
                 line = '{0} - {1}: {2}'.format(
                     emoji, 
                     room.channel, 
-                    ', '.join(f'`{booking.timespan()}`' for booking in room.booking.values())
+                    ', '.join(f'`{booking.timespan()}`' for booking in room.bookings.values())
                 )
                 lines.append(line)
             rooms = '\n'.join(lines)
