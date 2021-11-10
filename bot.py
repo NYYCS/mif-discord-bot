@@ -11,9 +11,9 @@ EXTENSIONS = [
     'cogs.verify',
     'cogs.welcome',
     'cogs.roles',
-    'cogs.rooms'
+    'cogs.rooms',
+    'cogs.admin'
 ]
-
 class Bot(commands.Bot):
 
     def __init__(self, command_prefix, description=None, **options):
