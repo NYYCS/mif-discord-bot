@@ -44,6 +44,11 @@ def get_next_reset():
         next_reset += timedelta(days=7)
     return next_reset
 
+def compute_weekly_average(weekly):
+    start = get_next_reset() - timedelta(weeks=1)
+    delta = time.dtnow() - start
+    return to_readable_time((weekly) / (delta.total_seconds() / (24 * 60 * 60)))
+
 class StudySession:
 
     def __init__(self, ctx, period):
@@ -216,6 +221,7 @@ class Study(commands.Cog):
         for session in self.sessions.copy().values():
             await session.end()
 
+
     @pom.command()
     async def rank(self, ctx, member: Optional[discord.Member] = None):
         if member is None:
@@ -236,10 +242,13 @@ class Study(commands.Cog):
         if member is None:
             raise StudyError('你这星期还没完成学习任务，现在马上开始学习吧！')
 
+        
+
         embed = discord.Embed(color=discord.Color.blurple())
         embed.title = '这星期排名'
         embed.description = f'**第{member["rank"]}名 {member["name"]}**\n'     \
                             f'这星期总学习时间: `{to_readable_time(member["weekly"])}`\n'   \
+                            f'这星期平均学习时间：`{compute_weekly_average(member["weekly"])}`\n' \
                             f'整体总学习时间: `{to_readable_time(member["total"])}`'
         
         await ctx.send(embed=embed)
